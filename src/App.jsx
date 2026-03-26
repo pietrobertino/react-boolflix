@@ -1,9 +1,14 @@
 import AppHeader from "./components/AppHeader"
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import ReactCountryFlag from "react-country-flag";
 
 function App() {
 
   const [results, setResults] = useState([]);
+
+  useEffect(() => {
+    console.log(results)
+  }, [results])
 
   return (
     <>
@@ -13,8 +18,8 @@ function App() {
           {results.map(movie => (
             <li key={movie.id}>
               <h3>{movie.title}</h3>
-              <h4>{movie.original_title}</h4>
-              <div>{movie.original_language}</div>
+              <h5>Original title: {movie.original_title}</h5>
+              <ReactCountryFlag countryCode={movie.original_language.toUpperCase()} />
               <div>{movie.vote_average}</div>
             </li>
           ))}

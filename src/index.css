@@ -1,2 +1,38 @@
 @import url("bootstrap-icons");
 @import url("bootstrap");
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
+
+#logo {
+    font-family: "Audiowide", sans-serif;
+}
+
+.form-control::placeholder {
+    color: white;
+}
+
+main {
+    min-height: 100vh;
+}
+
+.card {
+
+    .card-img {
+        transition: all 0.3s ease-in;
+    }
+
+    .card-img-overlay {
+        transition: all 0.3s ease-in;
+        opacity: 0%;
+
+    }
+}
+
+.card:hover {
+    .card-img {
+        opacity: 15%;
+    }
+
+    .card-img-overlay {
+        opacity: 100%;
+    }
+}

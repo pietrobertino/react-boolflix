@@ -19,6 +19,7 @@ function App() {
               <h5>Original title: {movie.original_title || movie.original_name}</h5>
               <ReactCountryFlag countryCode={movie.original_language.toUpperCase()} />
               <div>{movie.vote_average}</div>
+              <img src={`https://image.tmdb.org/t/p/w342${movie.poster_path}`} alt="" />
             </li>
           ))}
         </ul>

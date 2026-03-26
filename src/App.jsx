@@ -4,21 +4,19 @@ import ReactCountryFlag from "react-country-flag";
 
 function App() {
 
-  const [results, setResults] = useState([]);
+  const [movies, setMovies] = useState([]); //array di oggetti
 
-  useEffect(() => {
-    console.log(results)
-  }, [results])
+  useEffect(() => { console.log(movies) }, [movies])
 
   return (
     <>
-      <AppHeader setResults={setResults} />
+      <AppHeader setMovies={setMovies} />
       <main>
         <ul>
-          {results.map(movie => (
+          {movies?.map(movie => (
             <li key={movie.id}>
-              <h3>{movie.title}</h3>
-              <h5>Original title: {movie.original_title}</h5>
+              <h3>{movie.title || movie.name}</h3>
+              <h5>Original title: {movie.original_title || movie.original_name}</h5>
               <ReactCountryFlag countryCode={movie.original_language.toUpperCase()} />
               <div>{movie.vote_average}</div>
             </li>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-export default function AppHeader({ setResults }) {
+export default function AppHeader({ setMovies }) {
 
     const [title, setTitle] = useState("");
 
@@ -9,11 +9,14 @@ export default function AppHeader({ setResults }) {
 
     function handleSubmit(e) {
         e.preventDefault();
-        //prendiamo title, lo rendiamo idoneo alla query e poi effettuiamo la chiamata api (lo avrei fatto con uno useeffect se non fosse stato che deve effettuare la ricerca solo al click del pulsante)
         const query = title.toLowerCase().replace(" ", "+");
         axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${api_key}&query=${query}`)
             .then(res => {
-                setResults(res.data.results);
+                setMovies(prevMovies => [...prevMovies, ...res.data.results]);//array di oggetti o array vuoto se no risultati
+            })
+        axios.get(`https://api.themoviedb.org/3/search/tv?api_key=${api_key}&query=${query}`)
+            .then(res => {
+                setMovies(prevMovies => [...prevMovies, ...res.data.results]);
             })
         setTitle("");
     }
@@ -33,6 +36,5 @@ export default function AppHeader({ setResults }) {
 }
 
 
-//al click del bottone (submit) chiamiamo l'api e fetchiamo i dati dei film
-
-//come costruire la chiamata API? https://api.themoviedb.org/3/search/movie?api_key=&query=
+// adesso aggiugniamo anche le serie tv, chiamat api: https://api.themoviedb.org/3/search/tv?api_key=&query=
+// come fare per fare due chiamate diverse senza sapere a prescindere se si tratta di una serie o di un film?

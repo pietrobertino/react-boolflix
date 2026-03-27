@@ -25,7 +25,7 @@ export default function AppHeader({ setMovies }) {
     return (
         <header className="bg-black">
             <div className="container-fluid">
-                <div className="d-flex align-items-center justify-content-between p-3">
+                <div className="d-flex align-items-center justify-content-between gap-3 p-3">
                     <h1 className="text-danger" id="logo">
                         BOOLFLIX
                     </h1>

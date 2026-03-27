@@ -16,7 +16,6 @@ main {
 
 .card {
 
-    overflow: auto;
 
     .card-img {
         transition: all 0.3s ease-in;
@@ -27,9 +26,14 @@ main {
     }
 
     .card-img-overlay {
+        overflow: auto;
         transition: all 0.3s ease-in;
         opacity: 0%;
 
+    }
+
+    .card-img-overlay::-webkit-scrollbar {
+        display: none;
     }
 
     #flag {
@@ -38,9 +42,6 @@ main {
     }
 }
 
-.card::-webkit-scrollbar {
-    display: none;
-}
 
 .card:hover {
     .card-img {

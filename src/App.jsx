@@ -30,6 +30,12 @@ function App() {
       case "ja":
         finalCode = "jp";
         break;
+      case "ko":
+        finalCode = "kr";
+        break;
+      case "zh":
+        finalCode = "cn";
+        break;
       default:
         finalCode = lanCode;
     }
@@ -48,7 +54,7 @@ function App() {
 
   return (
     <>
-      <AppHeader setMovies={setMovies} />
+      <AppHeader setMovies={setMovies} movies={movies} />
       <main className="bg-dark">
         <div className="container">
           <div className="row row-cols-2 row-cols-md-3 row-cols-lg-5 py-3 g-3">
@@ -70,6 +76,9 @@ function App() {
                         <i key={index} className={`bi bi-${star}`}></i>
                       ))}
                     </div>
+                    <div>
+                      Actors: {movie.actor_names.slice(0, 5).join(", ")}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -86,5 +95,8 @@ export default App
 
 //Appunti:
 
+
 //alla fine dovrei componentizzare un po di roba, come le card, la search bar, i filtri che poi aggiungerò ecc.
 //inoltre potrei pensare di aggiungere layout, context api e roba varia giusto per, se mi avanza tempo.
+
+//ricordarsi di stampare solo i primi 5 attori

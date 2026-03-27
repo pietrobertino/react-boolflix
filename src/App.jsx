@@ -1,7 +1,6 @@
 import AppHeader from "./components/AppHeader"
 import { useEffect, useState } from "react";
-import ReactCountryFlag from "react-country-flag";
-
+import LanguageFlag from "./components/LanguageFlag";
 
 
 function App() {
@@ -19,6 +18,28 @@ function App() {
     return array
   }
 
+  useEffect(() => { console.log(movies) }, [movies])
+
+  function getFlagCode(lanCode) {
+
+    let finalCode;
+    switch (lanCode) {
+      case "en":
+        finalCode = "us";
+        break;
+      case "ja":
+        finalCode = "jp";
+        break;
+      default:
+        finalCode = lanCode;
+    }
+    return finalCode;
+
+  }
+
+
+
+
   return (
     <>
       <AppHeader setMovies={setMovies} />
@@ -32,7 +53,10 @@ function App() {
                   <div className="card-img-overlay">
                     <h3>{movie.title || movie.name}</h3>
                     <h5>Original title: {movie.original_title || movie.original_name}</h5>
-                    <ReactCountryFlag countryCode={movie.original_language.toUpperCase() === "EN" ? "US" : movie.original_language.toUpperCase()} />
+                    <div>
+                      <LanguageFlag flagCode={getFlagCode(movie.original_language)} />
+                      <span className="ms-2">{movie.original_language.toUpperCase()}</span>
+                    </div>
                     <div>
                       {getStars(movie.vote_average).map((star, index) => (
                         <i key={index} className={`bi bi-${star}`}></i>
@@ -53,5 +77,9 @@ export default App
 
 
 //Appunti:
-//capire come gestire meglio le bandiere: molte non funzionano perché sono associate al codice del paese non della lingua (es il giapponese invece di essere jp è ja), quindi devo trovare un workaround o un altro metodo per mostrarle che utilizzi la lingua
 // alcune card restano più corte di altre, inoltre per i titoli senza poster la card è minuscola, devo gestire la cosa
+//voglio ordinare i risultati sulla base della chiave popularity
+//nella versione mobile la searchbar e il titolo si sovrappongono, gestire la cosa
+
+//alla fine dovrei componentizzare un po di roba, come le card, la search bar, i filtri che poi aggiungerò ecc.
+//inoltre potrei pensare di aggiungere layout, context api e roba varia giusto per, se mi avanza tempo.

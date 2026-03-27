@@ -25,6 +25,11 @@ main {
         opacity: 0%;
 
     }
+
+    #flag {
+        width: 24px;
+        display: inline-block;
+    }
 }
 
 .card:hover {

@@ -79,6 +79,9 @@ function App() {
                     <div>
                       Actors: {movie.actor_names.slice(0, 5).join(", ")}
                     </div>
+                    <div>
+                      Genres: {movie.genres.join(", ")}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -98,5 +101,3 @@ export default App
 
 //alla fine dovrei componentizzare un po di roba, come le card, la search bar, i filtri che poi aggiungerò ecc.
 //inoltre potrei pensare di aggiungere layout, context api e roba varia giusto per, se mi avanza tempo.
-
-//ricordarsi di stampare solo i primi 5 attori

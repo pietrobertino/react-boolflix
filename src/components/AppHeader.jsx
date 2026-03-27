@@ -15,12 +15,13 @@ export default function AppHeader({ setMovies, movies }) {
             .then(async (res) => {
                 let results = res.data.results;
 
-                const promises = results.map(async (result, i) => { //funzione per modificare results in modo che ogni oggetto abbia anche una chiave per la lista degli attori
+                const promises = results.map(async (result, i) => {
                     try {
-                        const response = await axios.get(`https://api.themoviedb.org/3/movie/${result.id}/credits?api_key=${api_key}`);
+                        //funzione per modificare results in modo che ogni oggetto abbia anche una chiave per la lista degli attori
+                        const castResponse = await axios.get(`https://api.themoviedb.org/3/movie/${result.id}/credits?api_key=${api_key}`);
 
                         const actors = []; // array di stringhe con i nomi degli attori
-                        const cast = response.data.cast.filter(member => member.known_for_department === "Acting") // array di oggetti contente i singoli attori (e solo gli attori)
+                        const cast = castResponse.data.cast.filter(member => member.known_for_department === "Acting") // array di oggetti contente i singoli attori (e solo gli attori)
 
                         //ordino gli attori per popolarità
                         cast.sort((a, b) => (b.popularity - a.popularity))
@@ -29,7 +30,28 @@ export default function AppHeader({ setMovies, movies }) {
                         for (let k = 0; k < cast.length; k++) {
                             actors.push(cast[k].original_name);
                         }
-                        results[i] = { ...results[i], actor_names: actors } //adesso results[i] contiene l'oggetto originale più la chiave-valore actor_names: array di nomi
+
+
+                        //funzione che modifica nuovamente results per aggiungere chiave-valore genres:lista di generi
+                        const genresResponse = await axios.get(`https://api.themoviedb.org/3/genre/movie/list?api_key=${api_key}`);
+
+
+                        const allGenres = genresResponse.data.genres; //array di oggetti con ogni genere
+                        const myIds = result.genre_ids; // array con i nostri id
+
+                        const genres = allGenres.filter(genre => {
+                            return myIds.includes(genre.id) //includiamo il genere solo se il suo id è contenuto nella nostra lista
+                        })
+
+                        //trasformo la lista di oggetti genre in una lista di stringhe
+                        genres.forEach((item, index) => genres[index] = item.name);
+
+
+
+
+                        //aggiorno i risultati con la nuove chiavi valore (sia per gli attori che per i generi)
+                        results[i] = { ...results[i], actor_names: actors, genres: genres };
+
                     }
                     catch (err) {
                         console.error(err);
@@ -38,19 +60,20 @@ export default function AppHeader({ setMovies, movies }) {
 
                 await Promise.all(promises); // aspetto che tutte le chiamate siano finite
 
-                setMovies(prevMovies => [...prevMovies, ...results]);//array di oggetti 
+                setMovies(prevMovies => [...prevMovies, ...results]);//si aggiorna l'array di oggeti movies
 
             })
         axios.get(`https://api.themoviedb.org/3/search/tv?api_key=${api_key}&query=${query}`)
             .then(async (res) => {
                 let results = res.data.results;
 
-                const promises = results.map(async (result, i) => { //funzione per modificare results in modo che ogni oggetto abbia anche una chiave per la lista degli attori
+                const promises = results.map(async (result, i) => {
                     try {
-                        const response = await axios.get(`https://api.themoviedb.org/3/tv/${result.id}/credits?api_key=${api_key}`);
+                        //funzione per modificare results in modo che ogni oggetto abbia anche una chiave per la lista degli attori
+                        const castResponse = await axios.get(`https://api.themoviedb.org/3/tv/${result.id}/credits?api_key=${api_key}`);
 
                         const actors = []; // array di stringhe con i nomi degli attori
-                        const cast = response.data.cast.filter(member => member.known_for_department === "Acting") // array di oggetti contente i singoli attori (e solo gli attori)
+                        const cast = castResponse.data.cast.filter(member => member.known_for_department === "Acting") // array di oggetti contente i singoli attori (e solo gli attori)
 
                         //ordino gli attori per popolarità
                         cast.sort((a, b) => (b.popularity - a.popularity))
@@ -59,7 +82,28 @@ export default function AppHeader({ setMovies, movies }) {
                         for (let k = 0; k < cast.length; k++) {
                             actors.push(cast[k].original_name);
                         }
-                        results[i] = { ...results[i], actor_names: actors } //adesso results[i] contiene l'oggetto originale più la chiave-valore actor_names: array di nomi
+
+
+                        //funzione che modifica nuovamente results per aggiungere chiave-valore genres:lista di generi
+                        const genresResponse = await axios.get(`https://api.themoviedb.org/3/genre/tv/list?api_key=${api_key}`);
+
+
+                        const allGenres = genresResponse.data.genres; //array di oggetti con ogni genere
+                        const myIds = result.genre_ids; // array con i nostri id
+
+                        const genres = allGenres.filter(genre => {
+                            return myIds.includes(genre.id) //includiamo il genere solo se il suo id è contenuto nella nostra lista
+                        })
+
+                        //trasformo la lista di oggetti genre in una lista di stringhe
+                        genres.forEach((item, index) => genres[index] = item.name);
+
+
+
+
+                        //aggiorno i risultati con la nuove chiavi valore (sia per gli attori che per i generi)
+                        results[i] = { ...results[i], actor_names: actors, genres: genres };
+
                     }
                     catch (err) {
                         console.error(err);
@@ -68,7 +112,7 @@ export default function AppHeader({ setMovies, movies }) {
 
                 await Promise.all(promises); // aspetto che tutte le chiamate siano finite
 
-                setMovies(prevMovies => [...prevMovies, ...results]);//array di oggetti 
+                setMovies(prevMovies => [...prevMovies, ...results]);//si aggiorna l'array di oggeti movies
 
             })
 
@@ -99,12 +143,12 @@ export default function AppHeader({ setMovies, movies }) {
 }
 
 
-//la chiamata per sapere gli attori di un film di fa così https://api.themoviedb.org/3/movie/{movie_id}/credits, il movie id ci viene fornito dall'oggetto che otteniamo dalla prima chiamata,
-//poi se mi sposto sulla chaive "cast" ottengo un array di oggetti, il cui ogni oggetto è un attore, noi prendiamo i primi 5, e alla chiave original_name ottengo nome e cognome dell'attore sottoforma di stringa. 
+//Appunti:
 
-//per quanto riguarda le serie la chiamata è la seguente https://api.themoviedb.org/3/tv/{series_id}/credits, poi il rsto è tutto uguale al film. 
+//devo chiamare anche i generi, ogni  oggetto associato a un film /serie (movie) ha una chiave genre_ids: che contiene un array di id associati all'opera. 
 
-// il problema è come faccio a fare in modo che siano nella stessa scheda? come gestisco le chiamate api?
+//1 prendo questi id, p2 oi faccio la chiamata alla lista di id (che diversa per serie e film ovviamente), 3 filtro la lista che ottengo dall'api usando quella che prendo dal movie
 
-//la cosa migliore sarebbe aggiungere all'oggetto del film o della serie una nuova chiave valore, e poi semplicemente accedervi come per le altre. come si aggiunge chiave valore ad un oggetto? con il metodo di spread
+//4 infine aggiungo una nuova chiave all'oggetto movie, ovvero gernes: lista di stringhe e 5 la stampo
 
+//chiamte: https://api.themoviedb.org/3/genre/tv/list   https://api.themoviedb.org/3/genre/movie/list

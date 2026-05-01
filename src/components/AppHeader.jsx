@@ -1,11 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
-export default function AppHeader({ setMovies, movies }) {
+export default function AppHeader({ setMovies, setSelectedGenreId }) {
 
+    const [genreList, setGenreList] = useState([]);
     const [title, setTitle] = useState("");
 
     const api_key = import.meta.env.VITE_API_KEY;
+
+    useEffect(() => {
+        const genreSet = new Set();
+        async () => {
+            const promise_1 = axios.get(`https://api.themoviedb.org/3/genre/tv/list?api_key=${api_key}`)
+                .then(res => res.data.genres.forEach(genre => genreSet.add(genre)))
+            const promise_2 = axios.get(`https://api.themoviedb.org/3/genre/movie/list?api_key=${api_key}`)
+                .then(res => res.data.genres.forEach(genre => genreSet.add(genre)))
+            await Promise.all(promise_1, promise_2)
+            setGenreList([...genreSet]);
+        }
+
+    }, []);
+
+    useEffect(() => { console.log(genreList) }, [genreList])
 
     function handleSubmit(e) {
         e.preventDefault();
@@ -126,6 +142,16 @@ export default function AppHeader({ setMovies, movies }) {
                     <h1 className="text-danger" id="logo">
                         BOOLFLIX
                     </h1>
+                    <select
+                        name="genres"
+                        id="genres"
+                        onChange={(e) => setSelectedGenreId(e.target.value)}>
+                        <option value="">All movies and TV</option>
+                        {genreList.map(genre => (
+                            <option value={genre.id} key={genre.id}>{genre.name}</option>
+                        ))}
+
+                    </select>
                     <form onSubmit={handleSubmit} className="d-flex align-items-center gap-3 pb-3">
                         <input
                             className="form-control bg-dark text-white"
@@ -143,12 +169,19 @@ export default function AppHeader({ setMovies, movies }) {
 }
 
 
-//Appunti:
 
-//devo chiamare anche i generi, ogni  oggetto associato a un film /serie (movie) ha una chiave genre_ids: che contiene un array di id associati all'opera. 
 
-//1 prendo questi id, p2 oi faccio la chiamata alla lista di id (che diversa per serie e film ovviamente), 3 filtro la lista che ottengo dall'api usando quella che prendo dal movie
+//Milestone 6: 
+/*
+0) ottengo la lista di generi dall'api
 
-//4 infine aggiungo una nuova chiave all'oggetto movie, ovvero gernes: lista di stringhe e 5 la stampo
+1) creo un select con tot opzioni quante ce ne sono nella lista di generi (in relatà due selcect, uno per le serie e uno per i film)
 
-//chiamte: https://api.themoviedb.org/3/genre/tv/list   https://api.themoviedb.org/3/genre/movie/list
+2) all'onselected o quello che è aggiorno una variabile reattiva che conterrà gli id (uno pe rle seire uno per i film) associati al genere
+
+3) 
+
+
+
+
+*/

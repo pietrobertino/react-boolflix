@@ -6,6 +6,9 @@ import LanguageFlag from "./components/LanguageFlag";
 function App() {
 
   const [movies, setMovies] = useState([]); //array di oggetti
+  const [selectedGenreId, setSelectedGenreId] = useState("");
+  const [filteredList, setFilteredList] = useState(movies);
+
 
   function getStars(vote) {
     const stars = Math.ceil(Number(vote) / 2);
@@ -19,6 +22,15 @@ function App() {
   }
 
   useEffect(() => { console.log(movies) }, [movies])
+
+  useEffect(() => {
+    if (selectedGenreId) {
+      const newList = movies.filter(movie => movie.genre_ids.contains(selectedGenreId));
+      setFilteredList(newList);
+    } else {
+      setFilteredList(movies);
+    }
+  }, [movies, selectedGenreId])
 
   function getFlagCode(lanCode) {
 
@@ -54,11 +66,11 @@ function App() {
 
   return (
     <>
-      <AppHeader setMovies={setMovies} movies={movies} />
+      <AppHeader setMovies={setMovies} setSelectedGenreId={selectedGenreId} />
       <main className="bg-dark">
         <div className="container">
           <div className="row row-cols-2 row-cols-md-3 row-cols-lg-5 py-3 g-3">
-            {orderMovies(movies)?.map(movie => (
+            {orderMovies(filteredList)?.map(movie => (
               <div className="col h-100" key={movie.id}>
                 <div className="card h-100 bg-black text-white">
                   <div className="ratio">
@@ -94,6 +106,11 @@ function App() {
 }
 
 export default App
+
+
+
+
+
 
 
 //Appunti:
